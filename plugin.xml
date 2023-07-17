@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin xmlns="http://www.phonegap.com/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        id="cordova-plugin-mediaplayer" version="1.0">
+
+    <name>Mediaplayer plugin for Ionic</name>
+
+    <engines>
+        <engine name="cordova" version=">=3.4.0"/>
+    </engines>
+
+    <asset src="www/native-lib.js" target="js/native"/>
+
+    <js-module src="www/native-lib.js" name="mediaplayer">
+        <clobbers target="mediaplayer"/>
+    </js-module>
+
+    <platform name="android">
+
+        <framework src="org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2" />
+        <framework src="org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2" />
+        <framework src="androidx.core:core-ktx:1.3.2" />
+        <framework src="androidx.activity:activity-ktx:1.5.0" />
+        <framework src="androidx.palette:palette-ktx:1.0.0" />
+        <framework src="androidx.preference:preference-ktx:1.2.0" />
+        <framework src="androidx.media:media:1.6.0" />
+        <framework src="androidx.media3:media3-exoplayer:1.0.0-beta01" />
+        <framework src="androidx.media3:media3-session:1.0.0-beta01" />
+        <framework src="androidx.room:room-runtime:2.4.2" />
+        <framework src="androidx.room:room-ktx:2.4.2" />
+        <framework src="androidx.room:room-compiler:2.4.2" />
+        <framework src='androidx.work:work-runtime-ktx:2.7.1' />
+        <framework src="com.google.code.gson:gson:2.9.0" />
+
+        <apply-plugin>kotlin-android-extensions</apply-plugin>
+        <apply-plugin>kotlin-kapt</apply-plugin>
+
+        <config-file parent="/*" target="res/xml/config.xml">
+            <feature name="MediaPlayer">
+                <param name="android-package" value="com.tmt.mediaplayer.MediaPlayer"/>
+            </feature>
+        </config-file>
+
+        <config-file target="AndroidManifest.xml" parent="/*" mode="merge">
+            <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+            <uses-permission android:name="android.permission.INTERNET" />
+            <uses-permission android:name="android.permission.WAKE_LOCK" />
+            <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+            <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+            <uses-permission android:name="android.permission.VIBRATE" />
+        </config-file>
+
+        <config-file target="AndroidManifest.xml" parent="/manifest/application">
+
+            <service
+                    android:name="com.tmt.mediaplayer.PlayerService"
+                    android:enabled="true"
+                    android:exported="true"
+                    android:foregroundServiceType="mediaPlayback"
+                    tools:ignore="ExportedService">
+                <intent-filter>
+                    <action android:name="androidx.media3.session.MediaSessionService" />
+                    <action android:name="android.media.browse.MediaBrowserService" />
+                </intent-filter>
+            </service>
+            <receiver
+                    android:name="androidx.media.session.MediaButtonReceiver"
+                    android:exported="true">
+                <intent-filter>
+                    <action android:name="android.intent.action.MEDIA_BUTTON" />
+                </intent-filter>
+            </receiver>
+        </config-file>
+
+        <!-- Java plugin API -->
+        <source-file src="src/android/MediaPlayer.kt" target-dir="app/src/main/java/com/tmt/mediaplayer/"/>
+        <source-file src="src/android/Keys.kt" target-dir="app/src/main/java/com/tmt/mediaplayer/"/>
+        <source-file src="src/android/PlayerService.kt" target-dir="app/src/main/java/com/tmt/mediaplayer/"/>
+
+        <source-file src="src/android/collection/CollectionViewModel.kt" target-dir="app/src/main/java/com/tmt/mediaplayer/collection/"/>
+
+        <source-file src="src/android/database/CollectionDatabase.kt" target-dir="app/src/main/java/com/tmt/mediaplayer/database/"/>
+        <source-file src="src/android/database/Converters.kt" target-dir="app/src/main/java/com/tmt/mediaplayer/database/"/>
+        <source-file src="src/android/database/daos/EpisodeDao.kt" target-dir="app/src/main/java/com/tmt/mediaplayer/database/daos/"/>
+        <source-file src="src/android/database/daos/EpisodeDescriptionDao.kt" target-dir="app/src/main/java/com/tmt/mediaplayer/database/daos/"/>
+        <source-file src="src/android/database/daos/PodcastDao.kt" target-dir="app/src/main/java/com/tmt/mediaplayer/database/daos/"/>
+        <source-file src="src/android/database/daos/PodcastDescriptionDao.kt" target-dir="app/src/main/java/com/tmt/mediaplayer/database/daos/"/>
+        <source-file src="src/android/database/objects/Episode.kt" target-dir="app/src/main/java/com/tmt/mediaplayer/database/objects/"/>
+        <source-file src="src/android/database/objects/EpisodeDescription.kt" target-dir="app/src/main/java/com/tmt/mediaplayer/database/objects/"/>
+        <source-file src="src/android/database/objects/Podcast.kt" target-dir="app/src/main/java/com/tmt/mediaplayer/database/objects/"/>
+        <source-file src="src/android/database/objects/PodcastDescription.kt" target-dir="app/src/main/java/com/tmt/mediaplayer/database/objects/"/>
+        <source-file src="src/android/database/wrappers/EpisodeMostRecentView.kt" target-dir="app/src/main/java/com/tmt/mediaplayer/database/wrappers/"/>
+        <source-file src="src/android/database/wrappers/PodcastWithAllEpisodesWrapper.kt" target-dir="app/src/main/java/com/tmt/mediaplayer/database/wrappers/"/>
+        <source-file src="src/android/database/wrappers/PodcastWithRecentEpisodesWrapper.kt" target-dir="app/src/main/java/com/tmt/mediaplayer/database/wrappers/"/>
+
+        <source-file src="src/android/extensions/ArrayListExt.kt" target-dir="app/src/main/java/com/tmt/mediaplayer/extensions/"/>
+        <source-file src="src/android/extensions/MediaControllerExt.kt" target-dir="app/src/main/java/com/tmt/mediaplayer/extensions/"/>
+        <source-file src="src/android/extensions/PlaybackStateCompatExtOld.kt" target-dir="app/src/main/java/com/tmt/mediaplayer/extensions/"/>
+
+        <source-file src="src/android/helpers/AppThemeHelper.kt" target-dir="app/src/main/java/com/tmt/mediaplayer/helpers/"/>
+        <source-file src="src/android/helpers/AudioHelper.kt" target-dir="app/src/main/java/com/tmt/mediaplayer/helpers/"/>
+        <source-file src="src/android/helpers/CollectionHelper.kt" target-dir="app/src/main/java/com/tmt/mediaplayer/helpers/"/>
+        <source-file src="src/android/helpers/DateTimeHelper.kt" target-dir="app/src/main/java/com/tmt/mediaplayer/helpers/"/>
+        <source-file src="src/android/helpers/DownloadFinishedReceiver.kt" target-dir="app/src/main/java/com/tmt/mediaplayer/helpers/"/>
+        <source-file src="src/android/helpers/DownloadHelper.kt" target-dir="app/src/main/java/com/tmt/mediaplayer/helpers/"/>
+        <source-file src="src/android/helpers/DownloadWorker.kt" target-dir="app/src/main/java/com/tmt/mediaplayer/helpers/"/>
+        <source-file src="src/android/helpers/FileHelper.kt" target-dir="app/src/main/java/com/tmt/mediaplayer/helpers/"/>
+        <source-file src="src/android/helpers/ImageHelper.kt" target-dir="app/src/main/java/com/tmt/mediaplayer/helpers/"/>
+        <source-file src="src/android/helpers/LogHelper.kt" target-dir="app/src/main/java/com/tmt/mediaplayer/helpers/"/>
+        <source-file src="src/android/helpers/NetworkHelper.kt" target-dir="app/src/main/java/com/tmt/mediaplayer/helpers/"/>
+        <source-file src="src/android/helpers/NotificationHelper.kt" target-dir="app/src/main/java/com/tmt/mediaplayer/helpers/"/>
+        <source-file src="src/android/helpers/NotificationHelperOld.kt" target-dir="app/src/main/java/com/tmt/mediaplayer/helpers/"/>
+        <source-file src="src/android/helpers/PackageValidator.kt" target-dir="app/src/main/java/com/tmt/mediaplayer/helpers/"/>
+        <source-file src="src/android/helpers/PreferencesHelper.kt" target-dir="app/src/main/java/com/tmt/mediaplayer/helpers/"/>
+        <source-file src="src/android/helpers/StringHelper.kt" target-dir="app/src/main/java/com/tmt/mediaplayer/helpers/"/>
+        <source-file src="src/android/helpers/UiHelper.kt" target-dir="app/src/main/java/com/tmt/mediaplayer/helpers/"/>
+        <source-file src="src/android/helpers/WorkerHelper.kt" target-dir="app/src/main/java/com/tmt/mediaplayer/helpers/"/>
+
+        <source-file src="src/android/legacy/ImportHelper.kt" target-dir="app/src/main/java/com/tmt/mediaplayer/legacy/"/>
+        <source-file src="src/android/legacy/LegacyCollection.kt" target-dir="app/src/main/java/com/tmt/mediaplayer/legacy/"/>
+        <source-file src="src/android/legacy/LegacyEpisode.kt" target-dir="app/src/main/java/com/tmt/mediaplayer/legacy/"/>
+        <source-file src="src/android/legacy/LegacyPodcast.kt" target-dir="app/src/main/java/com/tmt/mediaplayer/legacy/"/>
+
+        <source-file src="src/android/results/GpodderResult.kt" target-dir="app/src/main/java/com/tmt/mediaplayer/results/"/>
+        <source-file src="src/android/results/PodcastindexResult.kt" target-dir="app/src/main/java/com/tmt/mediaplayer/results/"/>
+        <source-file src="src/android/results/SearchResult.kt" target-dir="app/src/main/java/com/tmt/mediaplayer/results/"/>
+
+        <source-file src="src/android/ui/PlayerState.kt" target-dir="app/src/main/java/com/tmt/mediaplayer/ui/"/>
+
+        <source-file src="src/android/xml/OpmlHelper.kt" target-dir="app/src/main/java/com/tmt/mediaplayer/xml/"/>
+        <source-file src="src/android/xml/RssHelper.kt" target-dir="app/src/main/java/com/tmt/mediaplayer/xml/"/>
+        <source-file src="src/android/xml/XmlHelper.kt" target-dir="app/src/main/java/com/tmt/mediaplayer/xml/"/>
+
+        <resource-file src="src/android/xml/allowed_media_browser_callers.xml" target="res/values/allowed_media_browser_callers.xml"/>
+        <resource-file src="src/android/xml/automotive_app_desc.xml" target="res/values/automotive_app_desc.xml"/>
+
+        <resource-file src="src/android/xml/ColorsFoo.xml" target="res/values/ColorsFoo.xml"/>
+        <resource-file src="src/android/xml/StringsFoo.xml" target="res/values/StringsFoo.xml"/>
+
+    </platform>
+
+</plugin>

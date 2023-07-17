@@ -1,0 +1,20 @@
+{
+  "name": "cordova-plugin-mediaplayer",
+  "version": "1.0.0",
+  "description": "Mediaplayer plugin for Ionic",
+  "main": "native-lib.js",
+  "cordova": {
+    "id": "cordova-plugin-mediaplayer",
+    "platforms": [
+      "android"
+    ]
+  },
+  "keywords": [
+    "mediaplayer"
+  ],
+  "author": "",
+  "license": "MIT",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
